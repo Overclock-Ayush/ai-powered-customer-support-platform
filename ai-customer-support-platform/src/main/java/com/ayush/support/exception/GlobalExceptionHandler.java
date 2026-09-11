@@ -3,6 +3,8 @@ package com.ayush.support.exception;
 import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,10 +14,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public org.springframework.http.ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()
-                .findFirst().map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .orElse("Validation failed");
         return response(HttpStatus.BAD_REQUEST, message);
     }
@@ -42,11 +48,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public org.springframework.http.ResponseEntity<?> handleGeneric(Exception ex) {
+        log.error("Unhandled application exception", ex);
         return response(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error");
     }
 
     private org.springframework.http.ResponseEntity<?> response(HttpStatus status, String message) {
         return org.springframework.http.ResponseEntity.status(status)
-                .body(Map.of("timestamp", Instant.now(), "status", status.value(), "error", message));
+                .body(Map.of(
+                        "timestamp", Instant.now(),
+                        "status", status.value(),
+                        "error", message));
     }
 }
