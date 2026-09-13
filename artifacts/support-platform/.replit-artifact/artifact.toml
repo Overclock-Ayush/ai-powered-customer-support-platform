@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AI Customer Support Platform"
+description = "A real customer support workspace where teams manage tickets, analyze issues with Gemini, and generate grounded replies from a searchable knowledge base."
+version = "1.0.0"
+id = "artifacts/support-platform"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19574
+
+[services.development]
+run = "pnpm --filter @workspace/support-platform run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/support-platform", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/support-platform/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19574"
+BASE_PATH = "/"

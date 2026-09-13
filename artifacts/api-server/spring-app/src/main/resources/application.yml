@@ -1,0 +1,33 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST}:${PGPORT:5432}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+app:
+  jwt-secret: ${SESSION_SECRET:change-this-development-secret-change-this-development-secret}
+  jwt-expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  chat-model: ${GEMINI_CHAT_MODEL:gemini-3.6-flash}
+  embedding-model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}
+  base-url: https://generativelanguage.googleapis.com/v1beta

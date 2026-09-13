@@ -1,0 +1,31 @@
+kind = "api"
+previewPath = "/api"
+title = "Support Platform API"
+version = "1.0.0"
+id = "3B4_FFSkEVBkAeYMFRJ2e"
+
+[[services]]
+localPort = 8080
+name = "API Server"
+paths = ["/api", "/actuator"]
+
+[services.development]
+run = "./spring-app/mvnw -f spring-app/pom.xml spring-boot:run"
+
+[services.production]
+
+[services.production.build]
+args = ["./spring-app/mvnw", "-f", "spring-app/pom.xml", "clean", "package", "-DskipTests"]
+
+[services.production.build.env]
+SPRING_PROFILES_ACTIVE = "production"
+
+[services.production.run]
+args = ["java", "-jar", "spring-app/target/support-platform-api-0.0.1-SNAPSHOT.jar"]
+
+[services.production.run.env]
+PORT = "8080"
+SPRING_PROFILES_ACTIVE = "production"
+
+[services.production.health.startup]
+path = "/api/healthz"
