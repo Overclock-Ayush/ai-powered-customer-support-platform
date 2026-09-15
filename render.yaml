@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: support-platform-api
+    runtime: docker
+    plan: free
+    region: oregon
+    repo: https://github.com/Overclock-Ayush/ai-powered-customer-support-platform
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    envVars:
+      - key: PGHOST
+        fromDatabase:
+          name: support-platform-db
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: support-platform-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: support-platform-db
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: support-platform-db
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: support-platform-db
+          property: password
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_EXPIRATION_MS
+        value: "86400000"
+    healthCheckPath: /actuator/health
+  - type: web
+    name: support-platform-frontend
+    runtime: static
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && PORT=443 BASE_PATH=/ pnpm --filter ./artifacts/support-platform run build
+    staticPublishPath: artifacts/support-platform/dist/public
+    repo: https://github.com/Overclock-Ayush/ai-powered-customer-support-platform
+    branch: main
+    autoDeploy: true
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://support-platform-api-amdv.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: support-platform-db
+    plan: free
+    region: oregon
+    databaseName: support_platform_db
