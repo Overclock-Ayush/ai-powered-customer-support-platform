@@ -54,6 +54,11 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers(
+                "/", "/index.html", "/assets/**", "/favicon.ico", "/vite.svg",
+                "/login", "/register", "/tickets", "/tickets/**",
+                "/knowledge", "/settings", "/dashboard"
+            ).permitAll()
             .requestMatchers("/api/auth/**", "/api/healthz", "/actuator/health", "/error").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
