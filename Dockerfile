@@ -5,7 +5,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY artifacts/support-platform/package.json ./artifacts/support-platform/package.json
 COPY lib ./lib
 COPY artifacts/support-platform ./artifacts/support-platform
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm approve-builds esbuild || true
+RUN pnpm rebuild esbuild
 ENV PORT=4173
 ENV BASE_PATH=/
 RUN pnpm --filter ./artifacts/support-platform run build
