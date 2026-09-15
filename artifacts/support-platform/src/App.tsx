@@ -12,9 +12,10 @@ import { NewTicketPage, TicketsPage } from '@/pages/tickets';
 import { TicketDetailPage } from '@/pages/ticket-detail';
 import { SettingsPage } from '@/pages/settings';
 import NotFound from '@/pages/not-found';
-import { setAuthTokenGetter } from '@workspace/api-client-react';
+import { setAuthTokenGetter, setBaseUrl } from '@workspace/api-client-react';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 15_000 } } });
+setBaseUrl(import.meta.env.VITE_API_BASE_URL ?? null);
 setAuthTokenGetter(() => localStorage.getItem('support_token'));
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
