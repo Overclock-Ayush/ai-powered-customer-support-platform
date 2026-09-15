@@ -3,9 +3,9 @@ server:
   forward-headers-strategy: framework
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT:5432}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://${PGHOST}:${PGPORT:5432}/${PGDATABASE}?sslmode=require}
+    username: ${PGUSER:}
+    password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver
   sql:
     init:
