@@ -1,7 +1,7 @@
 FROM node:22-bookworm-slim AS frontend-build
 WORKDIR /workspace
 RUN corepack enable
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json ./
 COPY artifacts/support-platform/package.json ./artifacts/support-platform/package.json
 COPY lib ./lib
 COPY artifacts/support-platform ./artifacts/support-platform
